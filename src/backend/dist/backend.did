@@ -1,0 +1,65 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type TrendingPrompt = 
+ record {
+   imageUrl: text;
+   promptText: text;
+   style: text;
+   useCount: nat;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Timestamp = int;
+type RateLimitStatus = 
+ record {
+   dailyLimit: nat;
+   remainingGenerations: nat;
+   resetTimeNanos: Timestamp;
+ };
+type ImageResult = 
+ record {
+   imageId: ImageId;
+   imageUrl: text;
+   isCached: bool;
+   prompt: text;
+   style: text;
+   timestamp: Timestamp;
+ };
+type ImageId = text;
+type GenerationError = 
+ variant {
+   ApiError: text;
+   ContentViolation;
+   QueueFull;
+   RateLimited;
+ };
+type DeviceId = text;
+service : {
+  generateImage: (prompt: text, style: text, deviceId: DeviceId) ->
+   (variant {
+      err: GenerationError;
+      ok: ImageResult;
+    });
+  getRateLimitStatus: (deviceId: DeviceId) -> (RateLimitStatus) query;
+  getTrendingPrompts: (style: opt text) -> (vec TrendingPrompt) query;
+  recordAdWatch: (deviceId: DeviceId, adType: text) -> (bool);
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+}

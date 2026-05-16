@@ -1,0 +1,54 @@
+// Version: 1.0.0
+type CacheEntry__72240424 =
+  {
+    imageId : ImageId__216201135;
+    imageUrl : Text;
+    prompt : Text;
+    style : Text;
+    timestamp : Timestamp__301639476
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DeviceId__795919761 = Text;
+type DeviceQuota__850200036 =
+  {
+    var bonusGenerations : Nat;
+    deviceId : DeviceId__795919761;
+    var usedToday : Nat;
+    var windowStartNanos : Timestamp__301639476
+  };
+type ImageId__216201135 = Text;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type Timestamp__301639476 = Int;
+type TrendingEntry__136102983 =
+  {
+    var imageUrl : Text;
+    var lastUpdatedNanos : Int;
+    promptText : Text;
+    style : Text;
+    var useCount : Nat
+  };
+actor {
+  stable cache :
+    {
+      var root : Node__46230540<Text, CacheEntry__72240424>;
+      var size : Nat__490723111
+    };
+  stable quotas :
+    {
+      var root : Node__46230540<DeviceId__795919761, DeviceQuota__850200036>;
+      var size : Nat__490723111
+    };
+  stable state : {var isProcessing : Bool};
+  stable trendingMap :
+    {
+      var root : Node__46230540<Text, TrendingEntry__136102983>;
+      var size : Nat__490723111
+    }
+};
